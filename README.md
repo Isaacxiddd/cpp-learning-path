@@ -1,78 +1,65 @@
-# C++ Fundamentals
+# C++ Learning Path
 
-University programming exercises covering algorithms, data structures, and problem-solving in C++.
+Ejercicios de programación en C++ que hice en la universidad. Cada archivo es un programa independiente que resuelve un problema puntual.
 
-## Technologies
+## Tecnologías
 
-- **Language:** C++ (C++11/17)
-- **Compiler:** g++ / MinGW
-- **IDE:** Visual Studio Code
-- **Library:** Custom educational C++ API (provided by the course) for strings, collections, file I/O, date/time handling
+- C++ (estándar C++11/17)
+- Compilador g++ (MinGW)
+- API educativa proporcionada por la materia (librería con funciones para strings, archivos, colecciones y fechas)
 
-## Concepts Practiced
+## Lo que practiqué
 
-| Category | Topics |
-|---|---|
-| **Algorithms** | Factorial (iterative), prime numbers (recursive), fraction arithmetic, GCD/Euclidean algorithm, fraction simplification |
-| **Data Structures** | Primitive types (`int`, `short`, `string`), memory representation |
-| **Functions** | Pass by value, pass by reference, return values, recursion |
-| **Control Flow** | Conditional branching (`if/else`), loops (`while`), input validation |
-| **Structs** | Custom data types, date structures, leap year logic |
-| **I/O** | Console input/output, formatted output |
+- Algoritmos: factorial, números primos, suma y simplificación de fracciones
+- Estructuras de datos: tipos enteros (int, short), strings
+- Conceptos: funciones con paso por valor y por referencia, recursividad, structs, validación de entrada
+- Control de flujo: if/else, while, operador ternario
+- Archivos de texto y entrada/salida por consola
 
-## Repository Structure
+## Estructura del proyecto
 
 ```
-├── lib/                        Educational C++ API (course-provided)
-│   ├── funciones/              String, file, token, list, array, timestamp utilities
-│   └── tads/                   Generic data structures: Coll, Array, List, Map, Queue, Stack
+├── lib/                        Librería educativa (la uso pero no es mía)
+│   ├── funciones/              Funciones de strings, archivos, tokens, arrays, listas, fechas
+│   └── tads/                   Estructuras genéricas: Coll, Array, List, Map, Queue, Stack
 ├── src/
-│   ├── algorithms/             Algorithm implementations
-│   │   ├── factorial.cpp          Factorial calculation (user input)
-│   │   ├── factorial_hardcoded.cpp Factorial (hardcoded value)
-│   │   ├── numeros_primos.cpp     Prime number detection (recursive)
-│   │   ├── simplificar_fraccion.cpp Fraction simplification (Euclidean GCD)
-│   │   └── suma_fracciones.cpp    Addition of two fractions
-│   ├── data-structures/        Data type exploration
-│   │   ├── tipos_int.cpp          Integer type demonstration
-│   │   ├── tipos_short.cpp        Short type demonstration
-│   │   └── tipos_string.cpp       String type demonstration
-│   └── mini-projects/          Complete mini programs
-│       ├── anio_bisiesto.cpp      Struct-based leap year validator
-│       ├── calcular_promedio.cpp  Statistics function with references
-│       ├── conteo_valores.cpp     Range-based value counting
-│       ├── dias_del_mes.cpp       Days-in-month calculator (leap year aware)
-│       ├── ejercicio4.cpp         Loop/counter exercise
-│       └── plantilla.cpp          Basic program template
-├── principal.hpp               Convenience header (includes all library modules)
+│   ├── algorithms/             Ejercicios de algoritmos
+│   │   ├── factorial.cpp               Cálculo de factorial con valor ingresado por el usuario
+│   │   ├── factorial_hardcoded.cpp     Factorial con valor fijo (n=5)
+│   │   ├── numeros_primos.cpp          Detección de números primos con recursividad
+│   │   ├── simplificar_fraccion.cpp    Simplificar fracciones usando el algoritmo de Euclides
+│   │   └── suma_fracciones.cpp         Sumar dos fracciones
+│   ├── data-structures/        Ejercicios de tipos de datos
+│   │   ├── tipos_int.cpp               Muestra cómo funciona el tipo int
+│   │   ├── tipos_short.cpp             Muestra cómo funciona el tipo short
+│   │   └── tipos_string.cpp            Muestra cómo funciona el tipo string
+│   └── mini-projects/          Programas completos
+│       ├── anio_bisiesto.cpp           Valida si un año es bisiesto usando struct Fecha
+│       ├── calcular_promedio.cpp       Calcula suma y promedio con funciones y referencias
+│       ├── conteo_valores.cpp          Cuenta valores según rangos numéricos
+│       ├── dias_del_mes.cpp            Muestra los días de un mes considerando año bisiesto
+│       ├── ejercicio4.cpp              Ejercicio de contador con while
+│       └── plantilla.cpp               Plantilla básica para empezar un programa
+├── principal.hpp               Header que incluye toda la librería
 └── .gitignore
 ```
 
-## How to Compile & Run
+## Cómo compilar y ejecutar
 
-Each `.cpp` file in `src/` is self-contained. Compile and run individually:
+Los archivos en `src/` son independientes. Se compilan y ejecutan así:
 
 ```bash
-# Using g++
 g++ src/algorithms/factorial.cpp -o factorial
 ./factorial
+```
 
-# Using g++ with the library (if needed)
+Si algún programa necesita la librería:
+
+```bash
 g++ src/algorithms/numeros_primos.cpp -I. -o numeros_primos
 ./numeros_primos
 ```
 
-Or compile all at once:
+## Aclaración
 
-```bash
-g++ src/algorithms/factorial.cpp src/algorithms/factorial_hardcoded.cpp -o factorial
-./factorial
-```
-
-> Note: Files in `src/` do not depend on `lib/`. The library headers are only required when building programs that use the educational API (e.g., programs that include `principal.hpp`).
-
-## About
-
-This repository contains exercises completed as part of a university C++ course. The educational library (`lib/`) was provided by the course and is included for reference — it is not my own work. All programs in `src/` were written by me.
-
-Feel free to explore, clone, or use as reference for learning C++ fundamentals.
+La carpeta `lib/` contiene una API educativa que nos dieron en la facultad. No es código mío. Los programas en `src/` sí los hice yo como parte de las prácticas de la materia.
