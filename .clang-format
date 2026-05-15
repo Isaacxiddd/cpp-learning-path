@@ -1,0 +1,8 @@
+BasedOnStyle: Google
+PointerAlignment: Left
+ReferenceAlignment: Left
+BreakBeforeBraces: Allman
+SpaceInControlStatementParentheses: true
+IndentWidth: 4
+AllowShortFunctionsOnASingleLine: None
+SpaceBeforeParens: false

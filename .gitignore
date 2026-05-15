@@ -1,0 +1,66 @@
+# =====================
+# C++ compiled artifacts
+# =====================
+*.exe
+*.obj
+*.o
+*.out
+*.ilk
+*.pdb
+*.idb
+*.pch
+*.ipch
+*.iobj
+*.ipdb
+*.res
+*.rsp
+*.sbr
+
+# =====================
+# Build directories
+# =====================
+build/
+Build/
+Debug/
+Release/
+x64/
+x86/
+Release*/
+Debug*/
+
+# =====================
+# IDE/editor files
+# =====================
+.vscode/
+.idea/
+*.suo
+*.sdf
+*.user
+*.vs/
+*.ncb
+*.opensdf
+*.opendb
+
+# =====================
+# Compiler intermediates
+# =====================
+*.manifest
+*.dep
+*.log
+*.tlog
+*.lastbuildstate
+*.unsuccessfulbuild
+
+# =====================
+# OS files
+# =====================
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# =====================
+# Temp/backup
+# =====================
+*~
+*.bak
+*.tmp
