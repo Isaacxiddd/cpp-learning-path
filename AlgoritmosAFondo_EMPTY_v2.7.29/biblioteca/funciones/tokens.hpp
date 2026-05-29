@@ -105,15 +105,12 @@ void setTokenAt(string& s, char sep, string t, int i){
 
 int findToken(string s, char sep, string t)
 {
-int i =0;
-int p =0;
-  while(i < length(s)){
-  if (getTokenAt(s,sep,i) == s){
-    p = i;
-  }
-  i++;
-}
-    return p;
+    int i = 0;
+    while(i < tokenCount(s, sep)){
+        if(getTokenAt(s, sep, i) == t){ return i; }
+        i++;
+    }
+    return -1;
 }
 
 #endif
