@@ -13,8 +13,10 @@ inline int length(const std::string& s){return static_cast<int>(s.size());}
 // Count occurrences of a character
 inline int charCount(const std::string& s,char c){int cnt=0;for(char ch:s) if(ch==c)++cnt;return cnt;}
 
-// Substring from d to h inclusive
-inline std::string substring(const std::string& s,int d,int h){if(d<0)d=0;if(h>=static_cast<int>(s.size()))h=s.size()-1;if(d>h)return"";return s.substr(d,h-d+1);} 
+// Substring from d to h (exclusive)
+inline std::string substring(const std::string& s,int d,int h){if(d<0)d=0;if(h>static_cast<int>(s.size()))h=s.size();if(d>=h)return"";return s.substr(d,h-d);}
+// Substring from d to end
+inline std::string substring(const std::string& s,int d){if(d<0)d=0;if(d>=(int)s.size())return"";return s.substr(d);}
 
 // Find first index of a character
 inline int indexOf(const std::string& s,char c){size_t p=s.find(c);return p==std::string::npos?-1:static_cast<int>(p);} 
@@ -39,12 +41,14 @@ inline int charToInt(char c){if(c>='0'&&c<='9')return c-'0';if(c>='A'&&c<='Z')re
 inline char intToChar(int i){if(i>=0&&i<=9)return '0'+i;if(i>=10&&i<=35)return 'A'+(i-10);return '\0';} 
 
 // Return digit at position i (0‑based from right)
-inline int getDigit(int n,int i){if(i<0)return-1; n=abs(n);for(int d=0;d<i;++d){if(n<10)return-1; n/=10;}return n%10;} 
+inline int getDigit(int n,int i){if(i<0)return-1; long long m=(n<0)?-(long long)n:(long long)n;for(int d=0;d<i;++d){if(m<10)return-1;m/=10;}return(int)(m%10);}
 inline int digitCount(int n){if(n==0)return 1;int cnt=0;while(n){++cnt;n/=10;}return cnt;} 
 
 // Integer to string
 inline std::string intToString(int i){return std::to_string(i);} 
 
+// String to integer (given base)
+inline int stringToInt(const std::string& s,int b){try{return std::stoi(s,nullptr,b);}catch(...){return 0;}}
 // String to integer (base 10)
 inline int stringToInt(const std::string& s){try{return std::stoi(s);}catch(...){return 0;}} 
 
@@ -65,11 +69,11 @@ inline std::string removeAt(const std::string& s,int pos){if(pos<0||pos>=static_
 inline std::string ltrim(const std::string& s){size_t i=0;while(i<s.size()&&std::isspace(static_cast<unsigned char>(s[i])))++i;return s.substr(i);}
 inline std::string rtrim(const std::string& s){size_t i=s.size();while(i&&std::isspace(static_cast<unsigned char>(s[i-1])))--i;return s.substr(0,i);}
 inline std::string trim(const std::string& s){return rtrim(ltrim(s));}
-inline std::string replicate(char c,int n){return std::string(static_cast<size_t>(n),c);} 
+inline std::string replicate(char c,int n){if(n<=0)return"";return std::string(static_cast<size_t>(n),c);}
 inline std::string spaces(int n){return replicate(' ',n);} 
-inline std::string lpad(const std::string& s,int n,char c){return replicate(c,n)+s;}
-inline std::string rpad(const std::string& s,int n,char c){return s+replicate(c,n);}
-inline std::string cpad(const std::string& s,int n,char c){int pad=(n-s.size())/2; return replicate(c,pad)+s+replicate(c,n-pad-s.size());}
+inline std::string lpad(const std::string& s,int n,char c){int pad=n-(int)s.size();return(pad>0?replicate(c,pad):"")+s;}
+inline std::string rpad(const std::string& s,int n,char c){int pad=n-(int)s.size();return s+(pad>0?replicate(c,pad):"");}
+inline std::string cpad(const std::string& s,int n,char c){int total=n-(int)s.size();if(total<=0)return s;int left=total/2;return replicate(c,left)+s+replicate(c,total-left);}
 
 inline bool isDigit(char c){return std::isdigit(static_cast<unsigned char>(c));}
 inline bool isLetter(char c){return std::isalpha(static_cast<unsigned char>(c));}
@@ -80,8 +84,7 @@ inline char toLowerCase(char c){return std::tolower(static_cast<unsigned char>(c
 inline std::string toUpperCase(const std::string& s){std::string r=s;std::transform(r.begin(),r.end(),r.begin(),::toupper);return r;}
 inline std::string toLowerCase(const std::string& s){std::string r=s;std::transform(r.begin(),r.end(),r.begin(),::tolower);return r;}
 inline int cmpString(const std::string& a,const std::string& b){return a.compare(b);} 
-inlin
-ode int cmpDouble(double a,double b){return (a>b)-(a<b);} 
+inline int cmpDouble(double a,double b){return (a>b)-(a<b);}
 
 inline char* stringToCString(const std::string& s){char* ret=new char[s.size()+1];std::copy(s.begin(),s.end(),ret);ret[s.size()]='\0';return ret;} 
 inline std::string cStringToString(const char c[]){return std::string(c);} 
