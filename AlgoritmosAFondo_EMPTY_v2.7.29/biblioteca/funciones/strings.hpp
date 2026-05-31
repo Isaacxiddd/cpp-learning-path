@@ -1,92 +1,584 @@
 #ifndef _TSTRINGS_T_
 #define _TSTRINGS_T_
 
-#include <string>
-#include <cctype>
-#include <algorithm>
-#include <cstdlib>
-#include <cstdio>
+#include <math.h>
+#include <stdio.h>
+#include <string.h>
+#include <iostream>
+using std::string;
 
-// Length of a string
-inline int length(const std::string& s){return static_cast<int>(s.size());}
+// ═══════════════════════════════════════════════════════════════
+//  FUNCIONES BÁSICAS DE STRINGS
+// ═══════════════════════════════════════════════════════════════
 
-// Count occurrences of a character
-inline int charCount(const std::string& s,char c){int cnt=0;for(char ch:s) if(ch==c)++cnt;return cnt;}
+int length(string s)
+{
+    int i = 0;
+    while (s[i] != '\0')
+    {
+        i++;
+    }
+    return i;
+}
 
-// Substring from d to h (exclusive)
-inline std::string substring(const std::string& s,int d,int h){if(d<0)d=0;if(h>static_cast<int>(s.size()))h=s.size();if(d>=h)return"";return s.substr(d,h-d);}
-// Substring from d to end
-inline std::string substring(const std::string& s,int d){if(d<0)d=0;if(d>=(int)s.size())return"";return s.substr(d);}
+int charCount(string s, char c)
+{
+    int cont = 0;
+    int i    = 0;
+    while (s[i] != '\0')
+    {
+        if (s[i] == c)
+        {
+            cont++;
+        }
+        i++;
+    }
+    return cont;
+}
 
-// Find first index of a character
-inline int indexOf(const std::string& s,char c){size_t p=s.find(c);return p==std::string::npos?-1:static_cast<int>(p);} 
+// d inclusive, h exclusive
+string substring(string s, int d, int h)
+{
+    string resultado = "";
+    for (int i = d; i < h; i++)
+    {
+        resultado = resultado + s[i];
+    }
+    return resultado;
+}
 
-// Find first index of a character starting from offset
-inline int indexOf(const std::string& s,char c,int offset){ if(offset<0)offset=0; size_t p=s.find(c,static_cast<size_t>(offset)); return p==std::string::npos?-1:static_cast<int>(p);} 
+// desde d hasta el final
+string substring(string s, int d)
+{
+    return substring(s, d, length(s));
+}
 
-// Find first index of a substring
-inline int indexOf(const std::string& s,const std::string& toSearch){size_t p=s.find(toSearch);return p==std::string::npos?-1:static_cast<int>(p);} 
+// ═══════════════════════════════════════════════════════════════
+//  FUNCIONES indexOf
+// ═══════════════════════════════════════════════════════════════
 
-// Find first index of a substring starting from offset
-inline int indexOf(const std::string& s,const std::string& toSearch,int offset){ if(offset<0)offset=0; size_t p=s.find(toSearch,static_cast<size_t>(offset)); return p==std::string::npos?-1:static_cast<int>(p);} 
+int indexOf(string s, char c)
+{
+    int i = 0;
+    while (s[i] != '\0')
+    {
+        if (s[i] == c) return i;
+        i++;
+    }
+    return -1;
+}
 
-// Find last index of a character
-inline int lastIndexOf(const std::string& s,char c){size_t p=s.rfind(c);return p==std::string::npos?-1:static_cast<int>(p);} 
+int indexOf(string s, char c, int offSet)
+{
+    int i = offSet;
+    while (s[i] != '\0')
+    {
+        if (s[i] == c) return i;
+        i++;
+    }
+    return -1;
+}
 
-// Find n‑th occurrence of a character
-inline int indexOfN(const std::string& s,char c,int n){if(n<=0)return-1;int count=0;for(size_t i=0;i<s.size();++i){if(s[i]==c){++count;if(count==n)return static_cast<int>(i);}}return-1;} 
+int indexOf(string s, string toSearch)
+{
+    int largo = length(toSearch);
+    int i     = 0;
 
-// Character to integer conversion (base 36)
-inline int charToInt(char c){if(c>='0'&&c<='9')return c-'0';if(c>='A'&&c<='Z')return c-'A'+10;if(c>='a'&&c<='z')return c-'a'+10;return-1;} 
-inline char intToChar(int i){if(i>=0&&i<=9)return '0'+i;if(i>=10&&i<=35)return 'A'+(i-10);return '\0';} 
+    while (s[i] != '\0')
+    {
+        if (s[i] == toSearch[0])
+        {
+            int pos = i;
+            int j   = 0;
+            while (j < largo && s[i] == toSearch[j])
+            {
+                i++;
+                j++;
+            }
+            if (j == largo) return pos;
+            i = pos + 1;
+        }
+        else
+        {
+            i++;
+        }
+    }
+    return -1;
+}
 
-// Return digit at position i (0‑based from right)
-inline int getDigit(int n,int i){if(i<0)return-1; long long m=(n<0)?-(long long)n:(long long)n;for(int d=0;d<i;++d){if(m<10)return-1;m/=10;}return(int)(m%10);}
-inline int digitCount(int n){if(n==0)return 1;int cnt=0;while(n){++cnt;n/=10;}return cnt;} 
+int indexOf(string s, string toSearch, int offset)
+{
+    if (offset < 0 || offset > length(s))
+    {
+        return -1;
+    }
 
-// Integer to string
-inline std::string intToString(int i){return std::to_string(i);} 
+    int largo = length(toSearch);
+    int i     = offset;
 
-// String to integer (given base)
-inline int stringToInt(const std::string& s,int b){try{return std::stoi(s,nullptr,b);}catch(...){return 0;}}
-// String to integer (base 10)
-inline int stringToInt(const std::string& s){try{return std::stoi(s);}catch(...){return 0;}} 
+    while (s[i] != '\0')
+    {
+        if (s[i] == toSearch[0])
+        {
+            int pos = i;
+            int j   = 0;
+            while (j < largo && s[i] == toSearch[j])
+            {
+                i++;
+                j++;
+            }
+            if (j == largo) return pos;
+            i = pos + 1;
+        }
+        else
+        {
+            i++;
+        }
+    }
+    return -1;
+}
 
-// char to string
-inline std::string charToString(char c){return std::string(1,c);} 
-inline char stringToChar(const std::string& s){return s.empty()?'\0':s[0];} 
-inline std::string stringToString(const std::string& s){return s;} 
-inline std::string doubleToString(double d){char buf[64];std::snprintf(buf,sizeof(buf),"%g",d);return buf;} 
-inline double stringToDouble(const std::string& s){try{return std::stod(s);}catch(...){return 0.0;}} 
+int lastIndexOf(string s, char c)
+{
+    int i = length(s) - 1;
+    while (i >= 0)
+    {
+        if (s[i] == c) return i;
+        i--;
+    }
+    return -1;
+}
 
-inline bool isEmpty(const std::string& s){return s.empty();}
-inline bool startsWith(const std::string& s,const std::string& pre){return s.size()>=pre.size()&&s.compare(0,pre.size(),pre)==0;}
-inline bool endsWith(const std::string& s,const std::string& suf){if(suf.size()>s.size())return false;return s.compare(s.size()-suf.size(),std::string::npos,suf)==0;}
-inline bool contains(const std::string& s,char c){return s.find(c)!=std::string::npos;}
-inline std::string replace(const std::string& s,char oldC,char newC){std::string r=s;for(char& ch:r)if(ch==oldC)ch=newC;return r;}
-inline std::string insertAt(const std::string& s,int pos,char c){if(pos<0)pos=0;if(pos>static_cast<int>(s.size()))pos=s.size();return s.substr(0,pos)+std::string(1,c)+s.substr(pos);}
-inline std::string removeAt(const std::string& s,int pos){if(pos<0||pos>=static_cast<int>(s.size()))return s;return s.substr(0,pos)+s.substr(pos+1);}
-inline std::string ltrim(const std::string& s){size_t i=0;while(i<s.size()&&std::isspace(static_cast<unsigned char>(s[i])))++i;return s.substr(i);}
-inline std::string rtrim(const std::string& s){size_t i=s.size();while(i&&std::isspace(static_cast<unsigned char>(s[i-1])))--i;return s.substr(0,i);}
-inline std::string trim(const std::string& s){return rtrim(ltrim(s));}
-inline std::string replicate(char c,int n){if(n<=0)return"";return std::string(static_cast<size_t>(n),c);}
-inline std::string spaces(int n){return replicate(' ',n);} 
-inline std::string lpad(const std::string& s,int n,char c){int pad=n-(int)s.size();return(pad>0?replicate(c,pad):"")+s;}
-inline std::string rpad(const std::string& s,int n,char c){int pad=n-(int)s.size();return s+(pad>0?replicate(c,pad):"");}
-inline std::string cpad(const std::string& s,int n,char c){int total=n-(int)s.size();if(total<=0)return s;int left=total/2;return replicate(c,left)+s+replicate(c,total-left);}
+int indexOfN(string s, char c, int n)
+{
+    if (n <= 0) return -1;
 
-inline bool isDigit(char c){return std::isdigit(static_cast<unsigned char>(c));}
-inline bool isLetter(char c){return std::isalpha(static_cast<unsigned char>(c));}
-inline bool isUpperCase(char c){return std::isupper(static_cast<unsigned char>(c));}
-inline bool isLowerCase(char c){return std::islower(static_cast<unsigned char>(c));}
-inline char toUpperCase(char c){return std::toupper(static_cast<unsigned char>(c));}
-inline char toLowerCase(char c){return std::tolower(static_cast<unsigned char>(c));}
-inline std::string toUpperCase(const std::string& s){std::string r=s;std::transform(r.begin(),r.end(),r.begin(),::toupper);return r;}
-inline std::string toLowerCase(const std::string& s){std::string r=s;std::transform(r.begin(),r.end(),r.begin(),::tolower);return r;}
-inline int cmpString(const std::string& a,const std::string& b){return a.compare(b);} 
-inline int cmpDouble(double a,double b){return (a>b)-(a<b);}
+    int i    = 0;
+    int cont = 0;
+    while (s[i] != '\0')
+    {
+        if (s[i] == c)
+        {
+            cont++;
+            if (cont == n) return i;
+        }
+        i++;
+    }
+    return length(s);
+}
 
-inline char* stringToCString(const std::string& s){char* ret=new char[s.size()+1];std::copy(s.begin(),s.end(),ret);ret[s.size()]='\0';return ret;} 
-inline std::string cStringToString(const char c[]){return std::string(c);} 
+// ═══════════════════════════════════════════════════════════════
+//  CONVERSIONES ENTRE TIPOS
+// ═══════════════════════════════════════════════════════════════
 
-#endif // _TSTRINGS_T_
+int charToInt(char c)
+{
+    if (c >= '0' && c <= '9') return c - '0';
+    if (c >= 'A' && c <= 'Z') return c - 'A' + 10;
+    if (c >= 'a' && c <= 'z') return c - 'a' + 10;
+    return -1;
+}
+
+char intToChar(int i)
+{
+    if (i >= 0  && i <= 9)  return i + '0';
+    if (i >= 65 && i <= 90) return (char)i;
+    return -1;
+}
+
+int getDigit(int n, int i)
+{
+    if (n < 0) n = -n;
+    for (int k = 0; k < i; k++)
+    {
+        n = n / 10;
+        if (n == 0) return -1;
+    }
+    return n % 10;
+}
+
+int digitCount(int a)
+{
+    if (a < 0) a = -a;
+    int c = 1;
+    while (a >= 10)
+    {
+        a = a / 10;
+        c++;
+    }
+    return c;
+}
+
+string intToString(int a)
+{
+    string c    = "";
+    char   g;
+    bool   neg  = false;
+
+    if (a < 0) { a = a * -1; neg = true; }
+    if (a == 0) { c = intToChar(a) + c; return c; }
+
+    while (a > 0)
+    {
+        int b = a % 10;
+        g     = intToChar(b);
+        c     = g + c;
+        a     = a / 10;
+    }
+
+    if (neg) c = '-' + c;
+    return c;
+}
+
+int stringToInt(string s, int b)
+{
+    if (b < 2 || b > 36) return -1;
+
+    bool neg = false;
+    int  i   = 0;
+
+    if (s[0] == '-') { neg = true; i = 1; }
+
+    int acu = 0;
+    while (s[i] != '\0')
+    {
+        int val;
+        if      (s[i] >= '0' && s[i] <= '9') val = s[i] - '0';
+        else if (s[i] >= 'A' && s[i] <= 'Z') val = s[i] - 'A' + 10;
+        else if (s[i] >= 'a' && s[i] <= 'z') val = s[i] - 'a' + 10;
+        else return -1;
+
+        if (val >= b) return -1;
+
+        acu = acu * b + val;
+        i++;
+    }
+
+    return neg ? -acu : acu;
+}
+
+int stringToInt(string s)
+{
+    return stringToInt(s, 10);
+}
+
+string charToString(char c)
+{
+    string b = " ";
+    b[0]     = c;
+    return b;
+}
+
+char stringToChar(string s)
+{
+    return s[0];
+}
+
+string stringToString(string s)
+{
+    return s;
+}
+
+string doubleToString(double d)
+{
+    char buffer[64];
+    sprintf(buffer, "%g", d);
+    return string(buffer);
+}
+
+double stringToDouble(string s)
+{
+    bool neg    = false;
+    int  inicio = 0;
+
+    if (s[0] == '-') { neg = true; inicio = 1; }
+
+    int    puntoPos = indexOf(s, '.');
+    string c        = "";
+    string d        = "";
+    double e        = 0;
+    double k        = 0;
+    int    p        = 1;
+
+    if (puntoPos == -1)
+    {
+        c = substring(s, inicio, length(s));
+        e = stringToInt(c);
+    }
+    else
+    {
+        c = substring(s, inicio, puntoPos);
+        d = substring(s, puntoPos + 1, length(s));
+        e = stringToInt(c);
+        k = stringToInt(d);
+        int o = length(d);
+        int i = 0;
+        while (i < o) { p = p * 10; i++; }
+    }
+
+    double resultado = e + k / p;
+    return neg ? -resultado : resultado;
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  FUNCIONES DE CONSULTA
+// ═══════════════════════════════════════════════════════════════
+
+bool isEmpty(string s)
+{
+    return s[0] == '\0';
+}
+
+bool startsWith(string s, string x)
+{
+    int i = 0;
+    while (x[i] != '\0')
+    {
+        if (s[i] != x[i]) return false;
+        i++;
+    }
+    return true;
+}
+
+bool endsWith(string s, string x)
+{
+    int largoS = length(s);
+    int largoX = length(x);
+
+    if (largoX > largoS) return false;
+
+    for (int i = 0; i < largoX; i++)
+    {
+        if (s[largoS - largoX + i] != x[i]) return false;
+    }
+    return true;
+}
+
+bool contains(string s, char c)
+{
+    return indexOf(s, c) != -1;
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  FUNCIONES DE MODIFICACIÓN
+// ═══════════════════════════════════════════════════════════════
+
+string replace(string s, char oldChar, char newChar)
+{
+    int i = 0;
+    while (s[i] != '\0')
+    {
+        if (s[i] == oldChar) s[i] = newChar;
+        i++;
+    }
+    return s;
+}
+
+string insertAt(string s, int pos, char c)
+{
+    string resultado = "";
+    int    i         = 0;
+
+    while (s[i] != '\0')
+    {
+        if (i == pos) resultado += c;
+        resultado += s[i];
+        i++;
+    }
+    if (pos >= i) resultado += c;
+
+    return resultado;
+}
+
+string removeAt(string s, int pos)
+{
+    string resultado = "";
+    int    i         = 0;
+
+    while (s[i] != '\0')
+    {
+        if (i != pos) resultado += s[i];
+        i++;
+    }
+    return resultado;
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  ESPACIOS Y RELLENO
+// ═══════════════════════════════════════════════════════════════
+
+string ltrim(string s)
+{
+    int i = 0;
+    while (s[i] == ' ') i++;
+
+    string resultado = "";
+    while (s[i] != '\0')
+    {
+        resultado += s[i];
+        i++;
+    }
+    return resultado;
+}
+
+string rtrim(string s)
+{
+    int i = length(s) - 1;
+    while (i >= 0 && s[i] == ' ') i--;
+
+    return substring(s, 0, i + 1);
+}
+
+string trim(string s)
+{
+    return ltrim(rtrim(s));
+}
+
+string replicate(char c, int n)
+{
+    string resultado = "";
+    for (int i = 0; i < n; i++)
+    {
+        resultado += c;
+    }
+    return resultado;
+}
+
+string spaces(int n)
+{
+    return replicate(' ', n);
+}
+
+string lpad(string s, int n, char c)
+{
+    int largo = length(s);
+    if (largo >= n) return s;
+    return replicate(c, n - largo) + s;
+}
+
+string rpad(string s, int n, char c)
+{
+    int largo = length(s);
+    if (largo >= n) return s;
+    return s + replicate(c, n - largo);
+}
+
+string cpad(string s, int n, char c)
+{
+    int largo = length(s);
+    if (largo >= n) return s;
+
+    int totalRelleno = n - largo;
+    int rellenoIzq   = totalRelleno / 2;
+    int rellenoDer   = totalRelleno - rellenoIzq;
+
+    return replicate(c, rellenoIzq) + s + replicate(c, rellenoDer);
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  CLASIFICACIÓN DE CARACTERES
+// ═══════════════════════════════════════════════════════════════
+
+bool isDigit(char c)
+{
+    return c >= '0' && c <= '9';
+}
+
+bool isLetter(char c)
+{
+    return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+}
+
+bool isUpperCase(char c)
+{
+    return c >= 'A' && c <= 'Z';
+}
+
+bool isLowerCase(char c)
+{
+    return c >= 'a' && c <= 'z';
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  MAYÚSCULAS / MINÚSCULAS
+// ═══════════════════════════════════════════════════════════════
+
+char toUpperCase(char c)
+{
+    if (isLowerCase(c)) return c - 32;
+    return c;
+}
+
+char toLowerCase(char c)
+{
+    if (isUpperCase(c)) return c + 32;
+    return c;
+}
+
+string toUpperCase(string s)
+{
+    int i = 0;
+    while (s[i] != '\0')
+    {
+        s[i] = toUpperCase(s[i]);
+        i++;
+    }
+    return s;
+}
+
+string toLowerCase(string s)
+{
+    int i = 0;
+    while (s[i] != '\0')
+    {
+        s[i] = toLowerCase(s[i]);
+        i++;
+    }
+    return s;
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  COMPARACIÓN
+// ═══════════════════════════════════════════════════════════════
+
+int cmpString(string a, string b)
+{
+    int i = 0;
+    while (a[i] != '\0' && b[i] != '\0')
+    {
+        if (a[i] != b[i]) return a[i] - b[i];
+        i++;
+    }
+    return (int)a[i] - (int)b[i];
+}
+
+int cmpDouble(double a, double b)
+{
+    if (a < b) return -1;
+    if (a > b) return  1;
+    return 0;
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  CONVERSIÓN string ↔ char[]
+// ═══════════════════════════════════════════════════════════════
+
+char* stringToCString(string s)
+{
+    char* ret = new char[length(s) + 1];
+    int   i   = 0;
+    while (s[i] != '\0')
+    {
+        ret[i] = (char)s[i];
+        i++;
+    }
+    ret[i] = '\0';
+    return ret;
+}
+
+string cStringToString(char c[])
+{
+    return string(c);
+}
+
+#endif
