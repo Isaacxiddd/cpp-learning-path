@@ -74,3 +74,8 @@ Desktop.ini
 # Windows reserved names
 # =====================
 nul
+
+# =====================
+# AI context files
+# =====================
+AGENTS.md
