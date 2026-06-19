@@ -1,0 +1,30 @@
+{
+
+  "active_env": "prod",
+  "environments": {
+    "prod": {
+      "version": "VSCode_v2.0.8.zip",
+      "url": "https://drive.google.com/uc?export=download&id=1ZCXbSIDmXvi4UcJgSTBbwTlAnxebWIx5",
+      "md5": "F4C05FCEB9FBACDF65D541887D08BA66"
+    },
+    "test": {
+      "version": "VSCode_v2.0.2.zip",
+      "url": "https://drive.google.com/uc?export=download&id=1GfzjVoldtkD-j9gF3SxtKf6G9v4SKMGM",
+      "md5": "549D9920CCB3A3D4276D015C9DE3DBF7"
+    }
+  },
+  "script": {
+    "last_update":"2026-06-05_12:00",
+	"url": "https://drive.google.com/uc?export=download&id=1A-2tdxFxqLGSbq54NDJIrdkMO0yE1HTg"
+  },
+  "tools": {
+    "sevenZip": {
+      "zipName": "7z.zip",
+      "exeName": "7za.exe",
+      "url": "https://drive.google.com/uc?export=download&id=179M_jancsoOFsQpY0s4Qii-7c_FumWyf",
+      "md5": "A23F88D84619538F3E2222C8060E941D"
+    }
+  }
+} 
+
+

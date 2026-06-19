@@ -3,11 +3,26 @@
 
 #include <iostream>
 #include <string>
+
+// Funciones de la biblioteca
 #include "lib/funciones/files.hpp"
 #include "lib/funciones/strings.hpp"
 #include "lib/funciones/tokens.hpp"
-#include "lib/tads/parte1/Fecha_v1.2_Empty.hpp"
+#include "lib/funciones/arrays.hpp"
+#include "lib/funciones/lists.hpp"
+#include "lib/funciones/millis.hpp"
+#include "lib/funciones/Coll.hpp"
+
+// TADs - Intro
+#include "lib/tads/intro/Fraccion.hpp"
+
+// TADs - Parte 1
 #include "lib/tads/parte1/Coll.hpp"
+#include "lib/tads/parte1/Fecha.hpp"
+#include "lib/tads/parte1/Timer.hpp"
+#include "lib/tads/parte1/MultidimColl.hpp"
+
+// TADs - Parte 2
 #include "lib/tads/parte2/Array.hpp"
 #include "lib/tads/parte2/List.hpp"
 #include "lib/tads/parte2/Map.hpp"
