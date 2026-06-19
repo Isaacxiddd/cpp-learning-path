@@ -79,3 +79,8 @@ nul
 # AI context files
 # =====================
 AGENTS.md
+
+# =====================
+# Scratch / temp files
+# =====================
+src/scratch/
