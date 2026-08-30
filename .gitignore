@@ -79,3 +79,8 @@ nul
 # Scratch / temp files
 # =====================
 src/scratch/
+
+# =====================
+# madar knowledge-graph output
+# =====================
+out/

@@ -7,11 +7,25 @@
 #include <math.h>
 using std::string;
 
+static void _spinDump(const char* fn, int i, const void* obj)
+{
+   const unsigned char* b = (const unsigned char*)obj;
+   const void** pp = (const void**)(b+0);
+   const unsigned* plen = (const unsigned*)(b+8);
+   const unsigned* pcap = (const unsigned*)(b+12);
+   fprintf(stderr, "\nSPIN[%s] i=%d p=%p len=%u cap=%u first=%02x%02x%02x%02x\n",
+           fn, i, *pp, *plen, *pcap, b[0],b[1],b[2],b[3]);
+   fflush(stderr);
+   abort();
+}
+
 int length(string s)
 {
    int i = 0;
    while( s[i++]!='\0' )
-      ;
+   {
+      if( i>500000 ) _spinDump("length", i, &s);
+   }
    return i-1;
 }
 
@@ -31,6 +45,13 @@ int charCount(string s, char c)
 
 string substring(string s, int d, int h)
 {
+   int L = length(s);
+   if( d<0 || h<d || h>L )
+   {
+      fprintf(stderr, "\nSUBSTRING-BAD d=%d h=%d L=%d\n", d, h, L);
+      fflush(stderr);
+      abort();
+   }
    string x = "";
    for( int i = d; i<h; i++ )
    {
@@ -165,7 +186,7 @@ int poww(int x, int y)
 int getDigit(int n, int i)
 {
    int r1 = n%(int)poww(10,i+1);
-   return r1/(pow(10,i));
+   return r1/poww(10,i);
 }
 
 int digitCount(int n)

@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include "strings.hpp"
+#include "tokens.hpp"
 
 using std::string;
 
@@ -183,11 +184,11 @@ void collReset(Coll<T>& c)
    c.curr=0;
 }
 
-template<typename T>
-string collToString(Coll<T> c)
-{
-   return c.sep+c.s;
-}
+// template<typename T>
+// string collToString(Coll<T> c)
+// {
+//    return c.sep+c.s;
+// }
 
 template<typename T>
 Coll<T> collFromString(string s)
@@ -196,6 +197,13 @@ Coll<T> collFromString(string s)
    c.sep=s[0];
    c.s=substring(s,1);
    return c;
+}
+
+
+template<typename T>
+string collToString(Coll<T> c)
+{
+	return c.sep+c.s;
 }
 
 

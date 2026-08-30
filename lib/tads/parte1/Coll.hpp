@@ -27,6 +27,7 @@ Coll<T> coll()
 template <typename T>
 int collSize(Coll<T> c)
 {
+    
     return 0;
 }
 
@@ -65,8 +66,7 @@ int collFind(Coll<T> c, K k, int cmpTK(T, K), T tFromString(string))
 }
 
 template <typename T>
-void collSort(Coll<T>& c, int cmpTT(T, T), T tFromString(string),
-              string tToString(T))
+void collSort(Coll<T>& c, int cmpTT(T, T), T tFromString(string), string tToString(T))
 {
 }
 

@@ -234,6 +234,21 @@ Pasos establecidos en el curso (Apéndice 1 + Capítulo 4):
 | **Apareo de archivos** | Dos o más archivos ordenados por la misma clave | Leer ambos, comparar claves, avanzar el menor |
 | **Procesamiento directo** | No entra en los dos anteriores | Solo `while (!feof)` simple |
 
+### Alcance del parcial (respuesta oficial del profe — 30/7/26 y 1/8/26)
+> "Indexación NO. Apareo NO. Todo lo demás, sí." — Sznajdleder, Pablo A.
+> "Usá IA para generar los archivos [.dat]." / "Yo les doy todo resuelto [el hpp]." — Sznajdleder, Pablo A.
+
+> ⚠️ **REGLAS DE ORO (memorizadas — 5/8/26):**
+> En el parcial SOLO existen estas técnicas, en este orden:
+> 1. **Corte de control** — novedades ordenadas por clave, se informa por subconjunto.
+> 2. **Procesamiento directo** — todo lo demás (descubrimiento, consulta en memoria, subir archivo, actualización).
+> **El RESTO NO EXISTE.** NO apareo, NO índices/indexación, NO nada más.
+> Al practicar los ejercicios de `tiddy/enunciados`: solo procesamiento directo y corte de control.
+> Si un ejercicio parece apareo, se resuelve con corte de control + consulta en memoria, o se saltea.
+- **En el parcial el hpp ya viene resuelto** (structs + serialización + wraps). El estudiante solo escribe el `principal.cpp` con la lógica (subir/procesar/mostrar).
+- **Los `.dat` se generan con IA** (p.ej. pedirle a Claude que los cree a partir del enunciado) — no hace falta "Algoritmos Tools".
+- Para practicar, esta carpeta ya sigue ese formato: el `hpp` completo y un `principal.cpp` en blanco a completar.
+
 ### Archivos
 - **Novedades/movimientos**: se procesan (una sola pasada)
 - **Consulta**: se suben a memoria (si son chicos) o se indexan (si son grandes)
@@ -482,7 +497,7 @@ g++ principal.cpp -I. -o principal.exe && principal.exe
 | `Coll.hpp` (funciones) | ✅ Completo | `lib/funciones/Coll.hpp` |
 | `Coll.hpp` (parte1) | ✅ Completo | `lib/tads/parte1/Coll.hpp` |
 | `Fraccion.hpp` | ✅ Completo (referencia) | `lib/tads/intro/Fraccion.hpp` |
-| `files.hpp` | 🚧 Esqueleto vacío | `lib/funciones/files.hpp` |
+| `files.hpp` | ✅ Completo | `lib/funciones/files.hpp` |
 | `arrays.hpp` | 🚧 Esqueleto vacío | `lib/funciones/arrays.hpp` |
 | `lists.hpp` | 🚧 Esqueleto vacío | `lib/funciones/lists.hpp` |
 | `Fecha.hpp` | 🚧 Esqueleto vacío | `lib/tads/parte1/Fecha.hpp` |

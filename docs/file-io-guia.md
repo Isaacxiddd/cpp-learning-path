@@ -1,4 +1,4 @@
-# Guía de FILE I/O en C++ — Por qué, cómo y cuándo
+ # Guía de FILE I/O en C++ — Por qué, cómo y cuándo
 
 **Materia:** Algoritmos y Programación A Fondo  
 **Profesor:** Pablo A. Sznajdleder  

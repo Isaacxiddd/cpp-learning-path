@@ -1,0 +1,289 @@
+================================================================================
+  GUIA COMPLETA: Agrupamiento Jerarquico con Colecciones Anidadas (Coll de Coll)
+================================================================================
+
+? QUE HACE ESTE PROGRAMA?
+
+Toma un archivo FRASES.txt con lineas como:
+
+    La vida es bella|Maradona D.|2003
+
+Y lo convierte en una lista agrupada asi:
+
+    2003
+        Maradona D.
+            La vida es bella
+            Otra frase
+        Galvan, M.
+            Una frase de Galvan
+    2007
+        ...
+
+Es decir: agrupa por ANIO, dentro de cada anio por AUTOR,
+y dentro de cada autor acumula las FRASES.
+
+----------------------------------------------------------------------
+? CUAL ES LA ESTRUCTURA DE DATOS?
+
+Tres niveles de anidacion:
+
+    NIVEL 1:  RAnio  (un anio)
+    NIVEL 2:  RAutor (un autor)
+    NIVEL 3:  string (una frase)
+
+Cada nivel wrappea al siguiente adentro de una Coll<>:
+
+    RAnio {
+        int anio;           <-- identificador de este nivel
+        Coll<RAutor> autores;  <-- aca adentro viven los RAutor
+    }
+
+    RAutor {
+        string nombre;       <-- identificador de este nivel
+        Coll<string> frases; <-- aca adentro viven las frases (strings)
+    }
+
+La coleccion PRINCIPAL es:
+
+    Coll<RAnio> cAnios;  <-- tiene todos los anios
+
+? POR QUE USAMOS Coll<> Y NO vector O list?
+
+Porque la catedra usa una libreria propia (Coll.hpp) que maneja
+persistencia en archivos. Coll<> guarda los datos como strings
+usando funciones ToString/FromString que vos definis.
+Eso permite leer/escribir la estructura directamente en disco.
+
+----------------------------------------------------------------------
+? QUE FUNCIONES NECESITA CADA STRUCT?
+
+Cada struct necesita 4 funciones basicas + 1 comparadora:
+
+A. rXToString(R X)  --->  "serializar: convertir struct a string"
+B. rXFromString(s)  --->  "deserializar: convertir string a struct"
+C. rX(...)          --->  "constructor: crear struct con datos"
+D. rXEquals(a,b)    --->  "comparar dos structs"
+
+Ademas, para cada nivel necesitas un COMPARADOR para collFind:
+
+    int cmpRAnioAnio(RAnio ra, int anioBuscado)
+    int cmpRAutorAutor(RAutor ra, string autorBuscado)
+
+Que devuelve: 0 si son iguales, <0 si ra es menor, >0 si ra es mayor.
+
+----------------------------------------------------------------------
+? COMO SE SERIALIZA (ToString/FromString)?
+
+Las Coll<> guardan todo como strings, con un SEPARADOR entre
+los campos. Elegis un caracter raro (char(1), char(2), etc)
+que SEGURO no aparece en los datos.
+
+Ejemplo RAutor (usa sep=1 o sea char(1)):
+
+    ToString:  nombre + char(1) + collToString(frases)
+               "Maradona D." + \x01 + "frase1#frase2#frase3"
+
+    FromString:
+        getTokenAt(s, sep, 0)  -->  nombre
+        getTokenAt(s, sep, 1)  -->  collFromString<string>(...)
+
+Ejemplo RAnio (usa sep=2):
+
+    ToString:  to_string(anio) + char(2) + collToString(autores)
+               "2003" + \x02 + "autor1$autor2$autor3"
+
+    FromString:
+        getTokenAt(s, sep, 0)  -->  stoi(...)  --> anio
+        getTokenAt(s, sep, 1)  -->  collFromString<RAutor>(...)
+
+? Y LAS Coll<string>? Esas usan su separador interno.
+Cuando creas una Coll<string> le decis el separador:
+
+    coll<string>('#')   <-- las frases se separan con '#'
+
+----------------------------------------------------------------------
+? CUAL ES EL CORAZON DEL PROGRAMA? (procesarAnio)
+
+Esta funcion recibe un triplete (anio, autor, frase) y lo mete
+en la estructura. El truco es que se repite el MISMO PATRON
+en cada nivel:
+
+    =========================================
+    PATRON: find-or-create, get, modify, set
+    =========================================
+
+    NIVEL ANIO:
+        1. collFind<RAnio,int>(cAnios, anio, cmpRAnioAnio, rAnioFromString)
+           - Si da -1: crear RAnio nuevo, collAdd, guardar posicion
+           - Si da >=0: ya existia, tenemos la posicion
+
+        2. RAnio x = collGetAt<RAnio>(cAnios, posAnio, rAnioFromString)
+           - Traemos el RAnio completo desde la Coll
+
+    NIVEL AUTOR (dentro de x.autores):
+        3. collFind<RAutor,string>(x.autores, autor, cmpRAutorAutor, rAutorFromString)
+           - Si da -1: crear RAutor nuevo, collAdd, guardar posicion
+
+        4. RAutor z = collGetAt<RAutor>(x.autores, posAutor, rAutorFromString)
+           - Traemos el RAutor completo desde la Coll
+
+    NIVEL FRASE (dentro de z.frases):
+        5. collAdd<string>(z.frases, frase, stringToString)
+           - Agregamos la frase a la coleccion de frases
+
+    GUARDAR CAMBIOS (de adentro hacia afuera):
+        6. collSetAt<RAutor>(x.autores, z, posAutor, rAutorToString)
+           - Guardamos el RAutor modificado en su lugar
+
+        7. collSetAt<RAnio>(cAnios, x, posAnio, rAnioToString)
+           - Guardamos el RAnio modificado en su lugar
+
+? POR QUE collSetAt? Porque collGetAt te da una COPIA.
+Si modificas la copia, la original en la Coll NO cambia.
+Tenés que volver a ponerla con collSetAt.
+
+----------------------------------------------------------------------
+? COMO SE MUESTRA EL LISTADO? (mostrarListado)
+
+Tres while anidados, uno por nivel:
+
+    collReset<RAnio>(cAnios);
+    while (collHasNext<RAnio>(cAnios)) {
+        RAnio rAn = collNext<RAnio>(cAnios, rAnioFromString);
+        cout << rAn.anio << endl;          // indentacion 0
+
+        collReset<RAutor>(rAn.autores);
+        while (collHasNext<RAutor>(rAn.autores)) {
+            RAutor rAu = collNext<RAutor>(..., rAutorFromString);
+            cout << "    " << rAu.nombre << endl;  // indentacion 4
+
+            collReset<string>(rAu.frases);
+            while (collHasNext<string>(rAu.frases)) {
+                string fr = collNext<string>(..., stringToString);
+                cout << "        " << fr << endl;  // indentacion 8
+            }
+        }
+    }
+
+Patron: collReset -> while collHasNext -> collNext.
+Nunca te olvides del collReset antes de iterar.
+
+----------------------------------------------------------------------
+? COMO ES EL main?
+
+    1. FILE* f = fopen("FRASES.txt", "r+b");
+       Si es NULL -> error y return 1.
+
+    2. Coll<RAnio> cAnios = coll<RAnio>('&');
+       (La coleccion principal, usa '&' como separador interno)
+
+    3. readLine(f, ln) en un while:
+         frase = getTokenAt(ln, '|', 0);
+         autor = getTokenAt(ln, '|', 1);
+         anio  = stringToInt(getTokenAt(ln, '|', 2));
+         procesarAnio(anio, autor, frase, cAnios);
+
+    4. mostrarListado(cAnios);
+
+    5. fclose(f);
+
+----------------------------------------------------------------------
+? PASOS PARA REHACERLO DE CERO (en orden exacto)
+
+PASO 1: .hpp - LOS STRUCTS
+    struct RAutor { string nombre; Coll<string> frases; };
+    struct RAnio { int anio; Coll<RAutor> autores; };
+
+PASO 2: .hpp - toString, fromString, constructor, equals para RAutor
+    Usar sep=1. collToString<string> para frases.
+
+PASO 3: .hpp - toString, fromString, constructor, equals para RAnio
+    Usar sep=2. collToString<RAutor> para autores.
+
+PASO 4: .cpp - COMPARADORES
+    int cmpRAnioAnio(RAnio ra, int a) { return ra.anio - a; }
+    int cmpRAutorAutor(RAutor ra, string a) { return cmpString(ra.nombre, a); }
+
+PASO 5: .cpp - procesarAnio (EL CORAZON)
+    find-or-create RAnio -> get -> find-or-create RAutor -> get -> add frase -> set autor -> set anio
+
+PASO 6: .cpp - mostrarListado
+    Triple while anidado con collReset/collHasNext/collNext.
+
+PASO 7: .cpp - main
+    fopen -> coll principal -> readLine loop -> mostrar -> fclose.
+
+PASO 8: FRASES.txt
+    frases separadas por | , una por linea.
+
+----------------------------------------------------------------------
+? TRUCOS PARA NO OLVIDARTE
+
+1. Los separadores: elegilos distintos entre si y que no aparezcan en datos
+   Ej: char(1) para RAutor, char(2) para RAnio, '#' para Coll<string>,
+       '%' para Coll<RAutor>, '&' para Coll<RAnio>.
+
+2. collFind recibe:
+   - la coleccion
+   - el valor a buscar
+   - el comparador (callback)
+   - la funcion fromString (para poder leer los elementos de la coll)
+
+3. collAdd devuelve la POSICION donde se agrego el elemento.
+   Guardala, la vas a necesitar para collSetAt despues.
+
+4. collGetAt te da UNA COPIA. Modificar la copia NO afecta la coleccion.
+   Siempre collSetAt para guardar los cambios.
+
+5. Antes de iterar: collReset siempre.
+   collNext necesita la funcion fromString para convertir.
+
+6. El ToString de RAnio llama a collToString<RAutor>.
+   El ToString de RAutor llama a collToString<string>.
+   El FromString hace el camino inverso: collFromString<Tipo>.
+
+7. Si no encontras un elemento (collFind da -1):
+   - Lo CREAS con el constructor
+   - Lo AGREGAS con collAdd
+   - El collAdd te da la posicion donde quedo
+
+----------------------------------------------------------------------
+? PREGUNTAS FRECUENTES DE PARCIAL
+
+? Cuando uso & y cuando paso por referencia?
+   En procesarAnio, Coll<RAnio>& cAnios se pasa por referencia porque
+   vamos a MODIFICAR la coleccion (collSetAt). Si no la modifiques,
+   pasala por valor nomas.
+
+? Por que hay dos versiones de ToDebug?
+   Una con mensaje y otra sin mensaje. Es solo para debuggear.
+   No son necesarias para el funcionamiento, pero ayudan.
+
+? Que pasa si FRASES.txt no existe?
+   fopen devuelve NULL, el programa muestra error y termina.
+
+? Como se si la Coll esta vacia?
+   collHasNext devuelve false si no hay elementos.
+   collSize devuelve la cantidad de elementos.
+
+----------------------------------------------------------------------
+? RESUMEN DE FUNCIONES DE Coll.hpp que USAS
+
+    coll<Tipo>(separador)           -> crea coleccion vacia
+    collAdd<Tipo>(coll, elem, toStr)-> agrega, devuelve posicion
+    collGetAt<Tipo>(coll, pos, from)-> obtiene elemento en posicion
+    collSetAt<Tipo>(coll, elem, pos, toStr) -> reemplaza elemento
+    collFind<Tipo, Busq>(coll, val, cmp, from) -> busca, devuelve pos
+    collReset<Tipo>(coll)           -> prepara para iterar
+    collHasNext<Tipo>(coll)         -> true si hay siguiente
+    collNext<Tipo>(coll, from)      -> devuelve el siguiente
+    collSize<Tipo>(coll)            -> cantidad de elementos
+    collToString<Tipo>(coll)        -> serializa toda la coleccion
+    collFromString<Tipo>(s)         -> deserializa toda la coleccion
+    stringToString(s)               -> identidad (para strings)
+    cmpString(a, b)                 -> compara strings
+    stringToInt(s)                  -> convierte string a int
+
+================================================================================
+  FIN DE LA GUIA - Ahora a practicar!
+================================================================================
